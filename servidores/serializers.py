@@ -1,15 +1,12 @@
 from rest_framework import serializers
 from servidores.models import Servidor
+from django.contrib.auth.models import User
 
 # Criação do serializador de dados dos servidores
-class ServidorSerializer(serializers.Serializer):
-	pk = serializers.IntegerField(read_only=True)
-	nome = serializers.CharField(required=True, allow_blank=False, max_length=150)
-	host = serializers.CharField(max_length=100, allow_blank=False)
-	cpu = serializers.IntegerField(default=1)
-	ram = serializers.IntegerField(default=1)
-	hd = serializers.IntegerField(default=1)
-	preco = serializers.DecimalField(max_digits=7, decimal_places=2)
+class ServidorSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Servidor
+		fields = ('created','pk','nome', 'host', 'cpu', 'ram', 'hd', 'preco')
 
 	# Cria e retorna as instancias da classe
 	def create(self, validated_data):
@@ -25,3 +22,11 @@ class ServidorSerializer(serializers.Serializer):
 		instance.preco = validated_data.get('preco', instance.preco)
 		instance.save()
 		return instance
+
+class UserSerializer(serializers.ModelSerializer):
+	servidores = serializers.PrimaryKeyRelatedField(many=True, queryset=Servidor.objects.all())
+	criador = serializers.ReadOnlyField(source='criador.username')
+
+	class Meta:
+		model = User
+		fields = ('id', 'username', 'servidores', 'criador')

@@ -9,6 +9,7 @@ class Servidor(models.Model):
 	ram = models.IntegerField(default=1)
 	hd = models.IntegerField(default=1)
 	preco = models.DecimalField(max_digits=7, decimal_places=2)
+	criador = models.ForeignKey('auth.User', related_name='servidores')
 
 	# Classe meta para ordenação interna
 	class Meta:
