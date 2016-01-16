@@ -15,19 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from rest_framework.urlpatterns import format_suffix_patterns
 from servidores import views
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
+router.register(r'servidores', views.ServidorViewSet)
+router.register(r'usuarios', views.UsuarioViewSet)
+
+
+# Lista de URLs a serem tratadas pelo roteador
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.ServidorListagem.as_view()),
-    url(r'^servidores/$', views.ServidorListagem.as_view()),
-    url(r'^servidores/(?P<pk>[0-9]+)$', views.ServidorDetalhes.as_view()),
-    url(r'^servidores/(?P<pk>[0-9]+)/$', views.ServidorDetalhes.as_view()),
-    url(r'^users/$', views.UserList.as_view()),
-    url(r'^users/(?P<pk>[0-9]+)$', views.UserDetail.as_view()),
+    url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),
+                               namespace='rest_framework')),    
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)

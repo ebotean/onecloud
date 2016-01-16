@@ -3,10 +3,12 @@ from servidores.models import Servidor
 from django.contrib.auth.models import User
 
 # Criação do serializador de dados dos servidores
-class ServidorSerializer(serializers.ModelSerializer):
+class ServidorSerializer(serializers.HyperlinkedModelSerializer):
+	criador = serializers.ReadOnlyField(source='criador.username')
+
 	class Meta:
 		model = Servidor
-		fields = ('created','pk','nome', 'host', 'cpu', 'ram', 'hd', 'preco')
+		fields = ('created','url','nome', 'host', 'cpu', 'ram', 'hd', 'preco', 'criador')
 
 	# Cria e retorna as instancias da classe
 	def create(self, validated_data):
@@ -23,10 +25,9 @@ class ServidorSerializer(serializers.ModelSerializer):
 		instance.save()
 		return instance
 
-class UserSerializer(serializers.ModelSerializer):
-	servidores = serializers.PrimaryKeyRelatedField(many=True, queryset=Servidor.objects.all())
-	criador = serializers.ReadOnlyField(source='criador.username')
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+	servidores = serializers.HyperlinkedRelatedField(many=True, view_name='servidor-detail', read_only=True)
 
 	class Meta:
 		model = User
-		fields = ('id', 'username', 'servidores', 'criador')
+		fields = ('url', 'username', 'servidores')
