@@ -1,5 +1,6 @@
 from servidores.models import Servidor
 from servidores.serializers import ServidorSerializer, UserSerializer
+from servidores.permissions import IsAdminOrReadOnly
 from rest_framework import generics
 from rest_framework import permissions
 from django.contrib.auth.models import User
@@ -8,7 +9,7 @@ from django.contrib.auth.models import User
 class ServidorListagem(generics.ListCreateAPIView):
     queryset = Servidor.objects.all()
     serializer_class = ServidorSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly)
 
     # override de método para atualizar o criador do servidor 
     # baseado no usuario da request passada
@@ -17,7 +18,7 @@ class ServidorListagem(generics.ListCreateAPIView):
     
 # Classe para tratamento de update, find e delete baseado em request
 class ServidorDetalhes(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly)
     queryset = Servidor.objects.all()
     serializer_class = ServidorSerializer
 
