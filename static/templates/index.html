@@ -1,35 +1,53 @@
 {% load staticfiles %}
 
 <!doctype html>
-<html lang="pt-br" ng-app="servidorApp">
+<html lang="en" ng-app="onecloud">
   <head>
     <meta charset="utf-8">
-    <title>MasterCloud</title>
-    <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.css" %}">
-    <link rel="stylesheet" href="css/app.css">
-    <script src="{% static "bower_components/angular/angular.js" %}"></script>
-    <script src="{% static "bower_components/angular-resource/angular-resource.js" %}"></script>
-    <script src="{% static "js/app.js" %}"></script>
-    <script src="{% static "js/controllers/servidor-controller.js" %}"></script>
+    <title>OneClaudio</title>
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+    <script src="{% static 'bower_components/angular/angular.js' %}"></script>
+    <script src="{% static 'bower_components/angular-resource/angular-resource.js' %}"></script>
+    <script src="{% static 'bower_components/angular-route/angular-route.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/onecloud.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascripts/directives/minhas-diretivas.js' %}"></script>
   </head>
-  <body ng-controller="{% block ng_controller %} ServidorController {% endblock %}">
-    <div class="container">
+  <body>
+    
+    <div class="container" ng-controller="ServidorController">
+      <div class="jumbotron" id="main-jumbo">
+        <h1>OneClaudio</h1>
+        <h3>O seu portal de Cloud Server</h3>
+      </div>
       {% block content %}
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Busca de servidores</h3>
+            </div>
+          </div>
+        </div>
+      </div> <!-- fim row -->
+
+      <div class="row">
+        <div class="col-md-10">
           <form>
-            <input ng-model="filtro" class="form-control" placeholder="Filtrar">
+              <input ng-model="filtro" class="form-control" id="filtro" placeholder="Filtrar">
           </form>
         </div>
-      </div>
+        <div class="col-md-2">
+          <form>
+            <label><input type="radio" id="filtrobtns" name="btnFiltro" ng-model="ordenacao" ng-value="nome" selected="true">Ordenar por nome</label>
+            <label><input type="radio" id="filtrobtns" name="btnFiltro" ng-model="ordenacao" ng-value="preco">Ordenar por preço</label>
+          </form>
+        </div>
+      </div> <!-- fim row -->
+
       {% verbatim %}
-      <ul>
-        <li ng-repeat="servidor in servidores | filter: filtro">
-          <span>{{servidor.nome}}</span>
-          <p>{{servidor.host}}</p>
-          <p>{{servidor.preco}}</p>
-        </li>
-      </ul>
+        <server ng-repeat="server in servidores | filter: filtro | orderBy : preco : false" nome="{{server.nome}}" host="{{server.host}}" cpu="{{server.cpu}}" ram="{{server.ram}}" hd="{{server.hd}}" preco="{{server.preco}}">
+        </server>
       {% endverbatim %}
       {% endblock %}
     </div> <!-- end container -->

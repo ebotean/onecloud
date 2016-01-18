@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets
 from django.contrib.auth.models import User
+from django.views.generic import TemplateView
 
 @api_view(['GET',])
 def api_root(request, format=None):
@@ -14,6 +15,9 @@ def api_root(request, format=None):
         'usuarios': reverse('user-list', request=request, format=format),
         'servidores': reverse('servidor-list', request=request, format=format)
     })
+
+class Index(TemplateView):
+    template_name = "index.html"
 
 # Viewset para realizar as operações de CRUD dos servidores
 class ServidorViewSet(viewsets.ModelViewSet):

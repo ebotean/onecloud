@@ -16,18 +16,22 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from servidores import views
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
+from servidores.views import Index, ServidorViewSet, UsuarioViewSet
 
-router = DefaultRouter()
-router.register(r'servidores', views.ServidorViewSet)
-router.register(r'usuarios', views.UsuarioViewSet)
+router = SimpleRouter()
+router.register(r'api/v1/servidores', views.ServidorViewSet)
+router.register(r'api/v1/usuarios', views.UsuarioViewSet)
+
 
 
 # Lista de URLs a serem tratadas pelo roteador
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include(router.urls)),
+    url(r'^servidores/', Index.as_view(), name="index"),
     url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),    
+                               namespace='rest_framework')),
+    # url('^.*$', IndexView.as_view(), name='index'),   
 ]
 
+urlpatterns += router.urls
